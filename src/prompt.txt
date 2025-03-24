@@ -1,70 +1,56 @@
-You are a meticulous historical data extraction specialist. Your task is to build a structured, historical text dataset by carefully transcribing information from a scanned image of a German patent register (1940). You will process the image and extract data from the double-column layout.
+YOU ARE AN EXPERT HISTORIAN. YOUR TASK IS TO EXTRACT DATA FROM A SCAN OF A GERMAN BUSINESS DIRECTORY. FAILURE TO FOLLOW THESE RULES EXACTLY WILL RESULT IN TOTAL SYSTEM FAILURE. THERE IS ZERO ROOM FOR ERROR.
 
-**Task:**
+STRICT JSON FORMAT – NO EXCEPTIONS:  
+- OUTPUT MUST BE VALID JSON.  
+- NO MARKDOWN, NO EXPLANATIONS, NO HEADERS.  
 
-For each patent entry identified in the image, extract *only* the following 4 data points and create a JSON object. If any information is missing, use `null` for that field. Focus on accuracy and historical preservation.
+FIELDS (STRICTLY NOTHING ELSE):  
+- "first and middle names" (string)  
+- "surname" (string; can also be a company name)  
+- "occupation" (string; "Wittwe" is NOT an occupation)  
+- "address" (string; full address if possible, otherwise partial)  
 
-**Fields to Extract (ONLY THESE 4):**
+NON-NEGOTIABLE RULES:  
+1. **EXTRACT EXACTLY AS WRITTEN. NO MODERNIZATION. NO INTERPRETATION. NO CHANGES.**  
+2. **ONLY TRANSCRIBE TEXT FROM THE MAIN PHYSICAL BOOK PAGE. ANY TEXT FROM ADJACENT PAGES MUST BE ERASED FROM EXISTENCE.**  
+3. **IF A WORD IS PARTIALLY VISIBLE OR CUT-OFF, IT DOES NOT EXIST. IT MUST BE IGNORED.**  
+4. **IF A FIELD IS MISSING, SET IT TO NULL. DO NOT GUESS. DO NOT INFER. DO NOT ATTEMPT TO RECONSTRUCT.**  
+5. **DO NOT ADD EXTRA INFORMATION. DO NOT ADD COMMENTS. DO NOT ADD ANYTHING OUTSIDE THE REQUIRED FIELDS.**  
+6. **DO NOT CONCATENATE OR MERGE ADDRESS FRAGMENTS FROM MULTIPLE ENTRIES. EACH ENTRY MUST REMAIN INTACT AS SEEN IN THE TEXT.**  
+7. **IF MULTIPLE ADDRESSES EXIST FOR ONE ENTRY, KEEP THEM EXACTLY AS WRITTEN. DO NOT REFORMAT.**  
 
-1.  **Patentnummer:** (The 6-digit patent number. Example: 684163).
-2.  **Name:** (The full names of *all* listed patent holders. If it's a company, write the full company name. If "Inh.:" is present, use the names *after* "Inh.:". If "Inh.:" is *not* present, use the names immediately after the patent number. Include any initials that are part of the names, and separate multiple names with commas, exactly as they appear. Example: Gorßler, W., Müller, F., Westfalia-Dinnendahl-Gröppel Akt.-Ges.).
-3.  **Ort:** (The city/town of the *first* listed patent holder, following the same "Inh.:" rule as Name.  If multiple patent holders have different locations, use the location of the *first* listed holder. Example: Rohſscheid, Bochum).
-4.  **Beschreibung:** (The descriptive text for the patent. This may be one or more lines. Capture *all* lines of the description, *exactly* as they appear, including any unusual characters or spacing. The description typically starts on the line *after* the patent holder information and ends *before* the next patent number. Example: "Vorrichtung zur selbsttätigen... Schwingrost zum...").
+STRICTLY ENFORCED EXAMPLE OUTPUT:  
 
-**Output Format:**
-
-*   **Strict JSON:** Output *only* valid JSON. No markdown, no explanations, no introductory text.
-*   **Multiple Entries:** The image contains multiple patent entries, return a JSON array of objects.
-*   **Double-Check JSON:** Ensure the JSON structure is valid, paying close attention to commas and brackets.
-
-**Extraction Rules (CRITICAL):**
-
-1.  **Historical Accuracy:**
-    *   Preserve *all* original spellings, abbreviations, and terms. *Do not modernize anything.*
-    *   Transcribe information *exactly* as it appears in the image.
-    *   If a field is not present, use `null` as its value.
-
-2.  **Entry Selection:**
-    *   *Only* include entries that have a clear 6-digit "Patentnummer".
-    *   *Do not* include entries marked with a cross (usually indented).
-    *   *Do not* include the summary lists of patent numbers sometimes found at the beginning of a new patent class.
-    *    Only transcribe the information depicted on the main page. Any overhang from other book pages should be completely ignored.
-
-3.  **Prioritize "Inh.:" (Patent Holder):**
-    *   For `Name` and `Ort`, *always* prioritize the information listed *after* "Inh.:" (if present). If "Inh.:" is not present, use the information immediately following the patent number.
-
-4.  **"Erf.:" (Inventor) is *NOT* Extracted:** We are *only* focusing on the patent *holder* information ("Inh.:" when present), not the inventor ("Erf.:").
-
-5.  **Beschreibung (Description):**
-    *   Capture the *entire* description, which may span multiple lines. Preserve all formatting, spacing, and unusual characters within the description.
-    *   The start can be identified as the text block following the patent holder and location and ends when the next patent number appears.
-6. **Multiple Names:**
-    *   List *all* patent holder names in the `Name` field, separated by commas, exactly as they appear in the source.
-
-**Example:**
 [
   {
-    "Patentnummer": "684163",
-    "Name": "Gorßler, W., Schmidt, H.",
-    "Ort": "Rohſscheid",
-    "Beschreibung": "Aufbereitung..."
+    "first and middle names": "Wilhelm Friedrich",
+    "surname": "Becker",
+    "occupation": "Schulmeister",
+    "address": "Alexanderplatz C201"
   },
-    {
-        "Patentnummer": "692548",
-        "Name": "Westfalia-Dinnendahl-Gröppel Akt.-Ges.",
-        "Ort": "Bochum",
-        "Beschreibung": "Scheibenwalzenrost. 23/12 37. - A 1303."
-    },
-    {
-        "Patentnummer": "688579",
-        "Name": "Ernst Heckel m.b.H.",
-        "Ort": "Saarbrücken",
-        "Beschreibung": "Gesellschaft für Förderanlagen. | Vorrichtung zum teilweisen Abschämen bestimmter Festteile aus einem bewegten Gutstrom fester Teile. 4/7 36. - A 667."
-    },
-        {
-        "Patentnummer": "690769",
-        "Name": "Malkmus, A.",
-        "Ort": "Köln-Höhenberg",
-        "Beschreibung": "Inh.: | Kldtner-Humboldt-Deutz Akt.-Ges., Rbln. | Ra[chma[chine für Erze odgl. 4/6 38. - A 1027."
-    }
+  {
+    "first and middle names": "Johann Georg",
+    "surname": "Weber",
+    "occupation": "Apotheker.",
+    "address": "auf der Lindenhöhe"
+  },
+  {
+    "first and middle names": "Karl August",
+    "surname": "Meyer",
+    "occupation": "Buchdrucker",
+    "address": "Hauptstraße 14, neben der Kirche"
+  },
+  {
+    "first and middle names": null,
+    "surname": "Müller & Co.",
+    "occupation": "Textilwarenhandel",
+    "address": "Schlossallee 3"
+  }
 ]
+
+FINAL COMMANDS – NO EXCEPTIONS:  
+- **IF A WORD OR ENTRY IS FROM AN ADJACENT PAGE, IT IS DEAD TO YOU. ERASE IT.**  
+- **IF AN ENTRY IS CROPPED OR UNCLEAR, IT MUST BE OBLITERATED. DO NOT INCLUDE.**  
+- **IF TEXT IS PARTIALLY VISIBLE OR DISTORTED, IT DOES NOT EXIST. IGNORE IT.**  
+- **OUTPUT MUST BE PURE, PERFECTLY FORMATTED JSON. NOTHING ELSE.**  
+- **FAILURE TO FOLLOW THESE RULES PRECISELY MEANS THE TASK IS COMPROMISED. THERE IS ZERO ROOM FOR ERROR.**

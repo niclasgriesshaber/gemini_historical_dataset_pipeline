@@ -39,6 +39,7 @@ env/
 *.swo
 
 # Data
-data/csvs/*
+data/csvs/
 data/pdfs/*
 !data/pdfs/type-1.pdf
+src/patent_prompt.txt
